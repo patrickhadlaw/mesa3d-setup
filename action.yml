@@ -1,0 +1,31 @@
+name: 'Mesa3D Setup'
+description: 'Builds and sets up mesa3d on the VM for your workflow'
+inputs:
+  install-vulkan:
+    description: 'The version of which to install vulkan sdk alongside mesa3d'
+    required: false
+    default: 'none'
+  mesa-version:
+    description: 'The version of mesa to install'
+    required: false
+    default: '20.2.0-rc3'
+outputs:
+  vulkan-path:
+    description: 'The path which the vulkan sdk has been installed'
+    value: ${{ steps.set-vulkan-path.outputs.vulkan-path }}
+runs:
+  using: "composite"
+
+  steps:
+    - id: set-vulkan-path
+      run: echo "::set-output name=vulkan-path::$(echo \"C:/VulkanSDK/${{ inputs.install-vulkan }}\")"
+      shell: bash
+
+    - run: echo "::set-env name=VULKAN_SDK::${{ outputs.vulkan-path }}" && echo "::set-env name=VK_SDK_PATH::${{ outputs.vulkan-path }}"
+      shell: bash
+
+    - run: ${{ github.action_path }}/setup.sh ${{ inputs.install-vulkan }} ${{ inputs.mesa-version }}
+      shell: bash
+    
+    - run: echo '::add-path::${{ github.action_path }}'
+      shell: bash
