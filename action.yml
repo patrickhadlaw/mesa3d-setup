@@ -1,0 +1,5 @@
+name: 'Mesa3D Setup'
+description: 'Builds and sets up mesa3d on the VM for your workflow'
+runs:
+  using: 'node12'
+  main: 'dist/main.js'
