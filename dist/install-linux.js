@@ -115,21 +115,21 @@ function installLinux() {
                             case 7:
                                 if (!((_d.sent()) == null)) return [3 /*break*/, 14];
                                 core.endGroup();
-                                return [4 /*yield*/, exec.exec('sudo add-apt-repository ppa:oibaf/graphics-drivers')];
-                            case 8:
-                                _d.sent();
-                                return [4 /*yield*/, exec.exec('sudo apt update')];
-                            case 9:
-                                _d.sent();
-                                return [4 /*yield*/, exec.exec('sudo apt upgrade')];
-                            case 10:
-                                _d.sent();
                                 core.startGroup('Installing Vulkan SDK version latest');
                                 return [4 /*yield*/, exec.exec("sudo apt install libvulkan1 vulkan-utils")];
-                            case 11:
+                            case 8:
                                 _d.sent();
                                 core.endGroup();
                                 core.startGroup('Installing Mesa3D version latest');
+                                return [4 /*yield*/, exec.exec('sudo add-apt-repository ppa:oibaf/graphics-drivers')];
+                            case 9:
+                                _d.sent();
+                                return [4 /*yield*/, exec.exec('sudo apt update')];
+                            case 10:
+                                _d.sent();
+                                return [4 /*yield*/, exec.exec('sudo apt upgrade')];
+                            case 11:
+                                _d.sent();
                                 return [4 /*yield*/, exec.exec("sudo apt install mesa-vulkan-drivers")];
                             case 12:
                                 _d.sent();
@@ -140,7 +140,7 @@ function installLinux() {
                             case 14:
                                 core.endGroup();
                                 core.startGroup('Installing X server');
-                                return [4 /*yield*/, exec.exec("sudo apt install xorg openbox xserver-xorg-video-dummy")];
+                                return [4 /*yield*/, exec.exec("sudo apt install xorg xterm openbox xserver-xorg-video-dummy")];
                             case 15:
                                 _d.sent();
                                 return [4 /*yield*/, exec.exec("sudo startx -config " + CONFIG_FILE)];

@@ -42,19 +42,19 @@ export async function installLinux(): Promise<any> {
     const cacheName = `${process.platform}-vulkan${vulkanVersion}-mesa${mesaVersion}`;
     if (await cache.restoreCache(cacheFiles, cacheName) == null) {
       core.endGroup();
-      await exec.exec('sudo add-apt-repository ppa:oibaf/graphics-drivers');
-      await exec.exec('sudo apt update');
-      await exec.exec('sudo apt upgrade');
       core.startGroup('Installing Vulkan SDK version latest');
       await exec.exec(`sudo apt install libvulkan1 vulkan-utils`);
       core.endGroup();
       core.startGroup('Installing Mesa3D version latest');
+      await exec.exec('sudo add-apt-repository ppa:oibaf/graphics-drivers');
+      await exec.exec('sudo apt update');
+      await exec.exec('sudo apt upgrade');
       await exec.exec(`sudo apt install mesa-vulkan-drivers`);
       await cache.saveCache(cacheFiles, cacheName).catch(error => reject(`failed to save cache: '${error}'`));
     }
     core.endGroup();
     core.startGroup('Installing X server');
-    await exec.exec(`sudo apt install xorg openbox xserver-xorg-video-dummy`);
+    await exec.exec(`sudo apt install xorg xterm openbox xserver-xorg-video-dummy`);
     await exec.exec(`sudo startx -config ${CONFIG_FILE}`);
     core.endGroup();
     resolve();
