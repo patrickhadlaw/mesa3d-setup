@@ -58,31 +58,82 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.installLinux = void 0;
 var exec = __importStar(require("@actions/exec"));
 var core = __importStar(require("@actions/core"));
+var cache = __importStar(require("@actions/cache"));
 var CONFIG_FILE = 'dummy-1920x1080.conf';
+function execWithOutput(command) {
+    return new Promise(function (resolve, reject) {
+        var result = '';
+        exec.exec(command, undefined, {
+            listeners: {
+                stdout: function (out) { return result += out.toString(); }
+            }
+        }).then(function (_) { return resolve(result); }).catch(function (e) { return reject(e); });
+    });
+}
+function dpkgQuery(pkg) {
+    return new Promise(function (resolve, reject) {
+        var result = [];
+        exec.exec('dpkg-query', ['-L', pkg], {
+            listeners: {
+                stdout: function (out) { return result.push(out.toString()); }
+            }
+        }).then(function (_) { return resolve(result); }).catch(function (e) { return reject(e); });
+    });
+}
 function installLinux() {
     return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, exec.exec('sudo add-apt-repository ppa:oibaf/graphics-drivers')];
+        var vulkanVersion, mesaVersion, cacheFiles, _a, _b, _c, cacheName;
+        return __generator(this, function (_d) {
+            switch (_d.label) {
+                case 0: return [4 /*yield*/, execWithOutput('apt show libvulkan1 | grep Version | cut -d\  -f2')];
                 case 1:
-                    _a.sent();
-                    return [4 /*yield*/, exec.exec('sudo apt update')];
+                    vulkanVersion = _d.sent();
+                    return [4 /*yield*/, execWithOutput('apt show mesa-vulkan-drivers | grep Version | cut -d\  -f2')];
                 case 2:
-                    _a.sent();
-                    return [4 /*yield*/, exec.exec('sudo apt upgrade')];
+                    mesaVersion = _d.sent();
+                    return [4 /*yield*/, dpkgQuery('libvulkan1')];
                 case 3:
-                    _a.sent();
-                    core.info("Installing Vulkan SDK version latest");
-                    return [4 /*yield*/, exec.exec("sudo apt install libvulkan1 vulkan-utils")];
+                    cacheFiles = _d.sent();
+                    _b = (_a = cacheFiles.push).apply;
+                    _c = [cacheFiles];
+                    return [4 /*yield*/, dpkgQuery('mesa-vulkan-drivers')];
                 case 4:
-                    _a.sent();
-                    core.info("Installing Mesa3D version latest");
-                    return [4 /*yield*/, exec.exec("sudo apt install mesa-vulkan-drivers xorg openbox xserver-xorg-video-dummy")];
+                    _b.apply(_a, _c.concat([_d.sent()]));
+                    cacheName = process.platform + "-vulkan" + vulkanVersion + "-mesa" + mesaVersion;
+                    return [4 /*yield*/, cache.restoreCache(cacheFiles, cacheName)];
                 case 5:
-                    _a.sent();
-                    return [4 /*yield*/, exec.exec("startx -config " + CONFIG_FILE)];
+                    if (!((_d.sent()) == null)) return [3 /*break*/, 12];
+                    return [4 /*yield*/, exec.exec('sudo add-apt-repository ppa:oibaf/graphics-drivers')];
                 case 6:
-                    _a.sent();
+                    _d.sent();
+                    return [4 /*yield*/, exec.exec('sudo apt update')];
+                case 7:
+                    _d.sent();
+                    return [4 /*yield*/, exec.exec('sudo apt upgrade')];
+                case 8:
+                    _d.sent();
+                    core.startGroup('Installing Vulkan SDK version latest');
+                    return [4 /*yield*/, exec.exec("sudo apt install libvulkan1 vulkan-utils")];
+                case 9:
+                    _d.sent();
+                    core.startGroup('Installing Mesa3D version latest');
+                    return [4 /*yield*/, exec.exec("sudo apt install mesa-vulkan-drivers")];
+                case 10:
+                    _d.sent();
+                    return [4 /*yield*/, cache.saveCache(cacheFiles, cacheName).catch(function (error) {
+                            throw new Error("failed to save cache: '" + error + "'");
+                        })];
+                case 11:
+                    _d.sent();
+                    _d.label = 12;
+                case 12:
+                    core.startGroup('Installing X server');
+                    return [4 /*yield*/, exec.exec("sudo apt install xorg openbox xserver-xorg-video-dummy")];
+                case 13:
+                    _d.sent();
+                    return [4 /*yield*/, exec.exec("sudo startx -config " + CONFIG_FILE)];
+                case 14:
+                    _d.sent();
                     return [2 /*return*/];
             }
         });
