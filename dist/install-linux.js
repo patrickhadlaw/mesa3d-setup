@@ -90,10 +90,10 @@ function installLinux() {
                         switch (_d.label) {
                             case 0:
                                 core.startGroup('Check cache');
-                                return [4 /*yield*/, execWithOutput('apt-cache show libvulkan1 | grep Version | cut -d\\  -f2 | head -n 1')];
+                                return [4 /*yield*/, execWithOutput("apt-cache show libvulkan1 | grep Version | cut -d ' ' -f2 | head -n 1")];
                             case 1:
                                 vulkanVersion = _d.sent();
-                                return [4 /*yield*/, execWithOutput('apt-cache show mesa-vulkan-drivers | grep Version | cut -d\\  -f2 | head -n 1')];
+                                return [4 /*yield*/, execWithOutput("apt-cache show mesa-vulkan-drivers | grep Version | cut -d ' ' -f2 | head -n 1")];
                             case 2:
                                 mesaVersion = _d.sent();
                                 return [4 /*yield*/, dpkgQuery('libvulkan1')];
