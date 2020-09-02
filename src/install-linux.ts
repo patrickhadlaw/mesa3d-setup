@@ -29,6 +29,7 @@ function aptQueryFiles(pkg: string): Promise<string[]> {
 export async function installLinux(): Promise<any> {
   return new Promise(async (resolve, reject) => {
     core.startGroup('Check cache');
+    await exec.exec('sudo apt install apt-file').catch(error => reject(error));
     const vulkanVersion = await execWithOutput(
       `/bin/bash -c "apt-cache show libvulkan1 | grep Version | cut -d ' ' -f2 | head -n 1"`
     ).catch(error => reject(error));
