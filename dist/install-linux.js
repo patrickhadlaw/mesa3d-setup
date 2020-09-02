@@ -90,10 +90,10 @@ function installLinux() {
                         switch (_d.label) {
                             case 0:
                                 core.startGroup('Check cache');
-                                return [4 /*yield*/, execWithOutput("apt-cache show libvulkan1 | grep Version | cut -d ' ' -f2 | head -n 1")];
+                                return [4 /*yield*/, execWithOutput("/bin/bash -c \"apt-cache show libvulkan1 | grep Version | cut -d ' ' -f2 | head -n 1\"").catch(function (error) { return reject(error); })];
                             case 1:
                                 vulkanVersion = _d.sent();
-                                return [4 /*yield*/, execWithOutput("apt-cache show mesa-vulkan-drivers | grep Version | cut -d ' ' -f2 | head -n 1")];
+                                return [4 /*yield*/, execWithOutput("/bin/bash -c \"apt-cache show mesa-vulkan-drivers | grep Version | cut -d ' ' -f2 | head -n 1\"").catch(function (error) { return reject(error); })];
                             case 2:
                                 mesaVersion = _d.sent();
                                 return [4 /*yield*/, dpkgQuery('libvulkan1')];
@@ -127,9 +127,7 @@ function installLinux() {
                                 return [4 /*yield*/, exec.exec("sudo apt install mesa-vulkan-drivers")];
                             case 10:
                                 _d.sent();
-                                return [4 /*yield*/, cache.saveCache(cacheFiles, cacheName).catch(function (error) {
-                                        throw new Error("failed to save cache: '" + error + "'");
-                                    })];
+                                return [4 /*yield*/, cache.saveCache(cacheFiles, cacheName).catch(function (error) { return reject("failed to save cache: '" + error + "'"); })];
                             case 11:
                                 _d.sent();
                                 _d.label = 12;

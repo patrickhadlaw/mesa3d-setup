@@ -29,8 +29,12 @@ function dpkgQuery(pkg: string): Promise<string[]> {
 export async function installLinux(): Promise<any> {
   return new Promise(async (resolve, reject) => {
     core.startGroup('Check cache');
-    const vulkanVersion = await execWithOutput(`apt-cache show libvulkan1 | grep Version | cut -d ' ' -f2 | head -n 1`);
-    const mesaVersion = await execWithOutput(`apt-cache show mesa-vulkan-drivers | grep Version | cut -d ' ' -f2 | head -n 1`);
+    const vulkanVersion = await execWithOutput(
+      `/bin/bash -c "apt-cache show libvulkan1 | grep Version | cut -d ' ' -f2 | head -n 1"`
+    ).catch(error => reject(error));
+    const mesaVersion = await execWithOutput(
+      `/bin/bash -c "apt-cache show mesa-vulkan-drivers | grep Version | cut -d ' ' -f2 | head -n 1"`
+    ).catch(error => reject(error));
     let cacheFiles = await dpkgQuery('libvulkan1');
     cacheFiles.push(...await dpkgQuery('mesa-vulkan-drivers'));
     const cacheName = `${process.platform}-vulkan${vulkanVersion}-mesa${mesaVersion}`;
@@ -44,9 +48,7 @@ export async function installLinux(): Promise<any> {
       core.endGroup();
       core.startGroup('Installing Mesa3D version latest');
       await exec.exec(`sudo apt install mesa-vulkan-drivers`);
-      await cache.saveCache(cacheFiles, cacheName).catch(error => {
-        throw new Error(`failed to save cache: '${error}'`);
-      });
+      await cache.saveCache(cacheFiles, cacheName).catch(error => reject(`failed to save cache: '${error}'`));
     }
     core.endGroup();
     core.startGroup('Installing X server');
