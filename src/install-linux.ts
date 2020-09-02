@@ -29,8 +29,8 @@ function dpkgQuery(pkg: string): Promise<string[]> {
 export async function installLinux(): Promise<any> {
   return new Promise(async (resolve, reject) => {
     core.startGroup('Check cache');
-    const vulkanVersion = await execWithOutput('apt show libvulkan1 | grep Version | cut -d\  -f2');
-    const mesaVersion = await execWithOutput('apt show mesa-vulkan-drivers | grep Version | cut -d\  -f2');
+    const vulkanVersion = await execWithOutput('apt-cache show libvulkan1 | grep Version | cut -d\\  -f2 | head -n 1');
+    const mesaVersion = await execWithOutput('apt-cache show mesa-vulkan-drivers | grep Version | cut -d\\  -f2 | head -n 1');
     let cacheFiles = await dpkgQuery('libvulkan1');
     cacheFiles.push(...await dpkgQuery('mesa-vulkan-drivers'));
     const cacheName = `${process.platform}-vulkan${vulkanVersion}-mesa${mesaVersion}`;
