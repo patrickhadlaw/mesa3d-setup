@@ -58,6 +58,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.installLinux = void 0;
 var exec = __importStar(require("@actions/exec"));
 var core = __importStar(require("@actions/core"));
+var io = __importStar(require("@actions/io"));
 var cache = __importStar(require("@actions/cache"));
 var version_1 = require("./version");
 var CONFIG_FILE = 'dummy-1920x1080.conf';
@@ -144,8 +145,11 @@ function installLinux() {
                                 return [4 /*yield*/, exec.exec("sudo apt-get install xorg openbox xserver-xorg-video-dummy")];
                             case 15:
                                 _d.sent();
-                                return [4 /*yield*/, exec.exec("sudo xorg -config " + CONFIG_FILE)];
+                                return [4 /*yield*/, io.cp("./" + CONFIG_FILE, '/etc/X11/xorg.conf')];
                             case 16:
+                                _d.sent();
+                                return [4 /*yield*/, exec.exec("sudo startx")];
+                            case 17:
                                 _d.sent();
                                 core.endGroup();
                                 resolve();

@@ -1,5 +1,6 @@
 import * as exec from '@actions/exec';
 import * as core from '@actions/core';
+import * as io from '@actions/io';
 import * as cache from '@actions/cache';
 import { VERSION } from './version';
 
@@ -56,7 +57,8 @@ export async function installLinux(): Promise<any> {
     core.endGroup();
     core.startGroup('Installing X server');
     await exec.exec(`sudo apt-get install xorg openbox xserver-xorg-video-dummy`);
-    await exec.exec(`sudo xorg -config ${CONFIG_FILE}`);
+    await io.cp(`./${CONFIG_FILE}`, '/etc/X11/xorg.conf');
+    await exec.exec(`sudo startx`);
     core.endGroup();
     resolve();
   });
