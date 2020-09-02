@@ -59,6 +59,7 @@ exports.installLinux = void 0;
 var exec = __importStar(require("@actions/exec"));
 var core = __importStar(require("@actions/core"));
 var cache = __importStar(require("@actions/cache"));
+var version_1 = require("./version");
 var CONFIG_FILE = 'dummy-1920x1080.conf';
 function execWithOutput(command) {
     return new Promise(function (resolve, reject) {
@@ -110,7 +111,7 @@ function installLinux() {
                                 return [4 /*yield*/, aptQueryFiles('mesa-vulkan-drivers')];
                             case 6:
                                 _b.apply(_a, _c.concat([_d.sent()]));
-                                cacheName = process.platform + "-vulkan" + vulkanVersion + "-mesa" + mesaVersion;
+                                cacheName = version_1.VERSION + "-" + process.platform + "-vulkan" + vulkanVersion + "-mesa" + mesaVersion;
                                 return [4 /*yield*/, cache.restoreCache(cacheFiles, cacheName)];
                             case 7:
                                 if (!((_d.sent()) == null)) return [3 /*break*/, 14];
@@ -124,13 +125,13 @@ function installLinux() {
                                 return [4 /*yield*/, exec.exec('sudo add-apt-repository ppa:oibaf/graphics-drivers')];
                             case 9:
                                 _d.sent();
-                                return [4 /*yield*/, exec.exec('sudo apt update')];
+                                return [4 /*yield*/, exec.exec('sudo apt-get update')];
                             case 10:
                                 _d.sent();
-                                return [4 /*yield*/, exec.exec('sudo apt upgrade')];
+                                return [4 /*yield*/, exec.exec('sudo apt-get upgrade')];
                             case 11:
                                 _d.sent();
-                                return [4 /*yield*/, exec.exec("sudo apt install mesa-vulkan-drivers")];
+                                return [4 /*yield*/, exec.exec("sudo apt-get install mesa-vulkan-drivers")];
                             case 12:
                                 _d.sent();
                                 return [4 /*yield*/, cache.saveCache(cacheFiles, cacheName).catch(function (error) { return reject("failed to save cache: '" + error + "'"); })];
@@ -140,10 +141,10 @@ function installLinux() {
                             case 14:
                                 core.endGroup();
                                 core.startGroup('Installing X server');
-                                return [4 /*yield*/, exec.exec("sudo apt install xorg xterm openbox xserver-xorg-video-dummy")];
+                                return [4 /*yield*/, exec.exec("sudo apt-get install xorg openbox xserver-xorg-video-dummy")];
                             case 15:
                                 _d.sent();
-                                return [4 /*yield*/, exec.exec("sudo startx -config " + CONFIG_FILE)];
+                                return [4 /*yield*/, exec.exec("sudo xorg -config " + CONFIG_FILE)];
                             case 16:
                                 _d.sent();
                                 core.endGroup();

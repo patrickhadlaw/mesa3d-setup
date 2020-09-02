@@ -1,6 +1,7 @@
 import * as exec from '@actions/exec';
 import * as core from '@actions/core';
 import * as cache from '@actions/cache';
+import { VERSION } from './version';
 
 const CONFIG_FILE = 'dummy-1920x1080.conf';
 
@@ -39,7 +40,7 @@ export async function installLinux(): Promise<any> {
     await exec.exec('sudo apt-file update');
     let cacheFiles = await aptQueryFiles('libvulkan1');
     cacheFiles.push(...await aptQueryFiles('mesa-vulkan-drivers'));
-    const cacheName = `${process.platform}-vulkan${vulkanVersion}-mesa${mesaVersion}`;
+    const cacheName = `${VERSION}-${process.platform}-vulkan${vulkanVersion}-mesa${mesaVersion}`;
     if (await cache.restoreCache(cacheFiles, cacheName) == null) {
       core.endGroup();
       core.startGroup('Installing Vulkan SDK version latest');
@@ -47,15 +48,15 @@ export async function installLinux(): Promise<any> {
       core.endGroup();
       core.startGroup('Installing Mesa3D version latest');
       await exec.exec('sudo add-apt-repository ppa:oibaf/graphics-drivers');
-      await exec.exec('sudo apt update');
-      await exec.exec('sudo apt upgrade');
-      await exec.exec(`sudo apt install mesa-vulkan-drivers`);
+      await exec.exec('sudo apt-get update');
+      await exec.exec('sudo apt-get upgrade');
+      await exec.exec(`sudo apt-get install mesa-vulkan-drivers`);
       await cache.saveCache(cacheFiles, cacheName).catch(error => reject(`failed to save cache: '${error}'`));
     }
     core.endGroup();
     core.startGroup('Installing X server');
-    await exec.exec(`sudo apt install xorg xterm openbox xserver-xorg-video-dummy`);
-    await exec.exec(`sudo startx -config ${CONFIG_FILE}`);
+    await exec.exec(`sudo apt-get install xorg openbox xserver-xorg-video-dummy`);
+    await exec.exec(`sudo xorg -config ${CONFIG_FILE}`);
     core.endGroup();
     resolve();
   });
