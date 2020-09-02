@@ -1,0 +1,8 @@
+[Unit]
+Description=X Server
+
+[Service]
+ExecStart=startx
+
+[Install]
+WantedBy=multi-user.target

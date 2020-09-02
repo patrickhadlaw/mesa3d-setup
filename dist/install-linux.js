@@ -61,6 +61,7 @@ var core = __importStar(require("@actions/core"));
 var cache = __importStar(require("@actions/cache"));
 var version_1 = require("./version");
 var CONFIG_FILE = 'dummy.conf';
+var SERVICE_FILE = 'xserver.service';
 function execWithOutput(command) {
     return new Promise(function (resolve, reject) {
         var result = '';
@@ -146,8 +147,14 @@ function installLinux() {
                                 return [4 /*yield*/, exec.exec("sudo cp " + __dirname + "/../" + CONFIG_FILE + " /etc/X11/xorg.conf")];
                             case 15:
                                 _d.sent();
-                                return [4 /*yield*/, exec.exec("sudo startx")];
+                                return [4 /*yield*/, exec.exec("sudo cp " + __dirname + "/../" + SERVICE_FILE + " /etc/systemd/system/" + SERVICE_FILE)];
                             case 16:
+                                _d.sent();
+                                return [4 /*yield*/, exec.exec("sudo systemctl daemon-reload")];
+                            case 17:
+                                _d.sent();
+                                return [4 /*yield*/, exec.exec("sudo systemctl start xserver.service")];
+                            case 18:
                                 _d.sent();
                                 core.endGroup();
                                 resolve();

@@ -1,11 +1,10 @@
 import * as exec from '@actions/exec';
 import * as core from '@actions/core';
-import * as github from '@actions/github';
-import * as io from '@actions/io';
 import * as cache from '@actions/cache';
 import { VERSION } from './version';
 
 const CONFIG_FILE = 'dummy.conf';
+const SERVICE_FILE = 'xserver.service';
 
 function execWithOutput(command: string): Promise<String> {
   return new Promise((resolve, reject) => {
@@ -60,7 +59,9 @@ export async function installLinux(): Promise<any> {
     core.startGroup('Installing X server');
     await exec.exec(`sudo apt-get install xorg openbox xserver-xorg-video-dummy`);
     await exec.exec(`sudo cp ${__dirname}/../${CONFIG_FILE} /etc/X11/xorg.conf`);
-    await exec.exec(`sudo startx`);
+    await exec.exec(`sudo cp ${__dirname}/../${SERVICE_FILE} /etc/systemd/system/${SERVICE_FILE}`);
+    await exec.exec(`sudo systemctl daemon-reload`);
+    await exec.exec(`sudo systemctl start xserver.service`);
     core.endGroup();
     resolve();
   });
