@@ -85,7 +85,9 @@ function installLinux() {
         var vulkanVersion, mesaVersion, cacheFiles, _a, _b, _c, cacheName;
         return __generator(this, function (_d) {
             switch (_d.label) {
-                case 0: return [4 /*yield*/, execWithOutput('apt show libvulkan1 | grep Version | cut -d\  -f2')];
+                case 0:
+                    core.startGroup('Check cache');
+                    return [4 /*yield*/, execWithOutput('apt show libvulkan1 | grep Version | cut -d\  -f2')];
                 case 1:
                     vulkanVersion = _d.sent();
                     return [4 /*yield*/, execWithOutput('apt show mesa-vulkan-drivers | grep Version | cut -d\  -f2')];
@@ -103,6 +105,7 @@ function installLinux() {
                     return [4 /*yield*/, cache.restoreCache(cacheFiles, cacheName)];
                 case 5:
                     if (!((_d.sent()) == null)) return [3 /*break*/, 12];
+                    core.endGroup();
                     return [4 /*yield*/, exec.exec('sudo add-apt-repository ppa:oibaf/graphics-drivers')];
                 case 6:
                     _d.sent();
@@ -116,6 +119,7 @@ function installLinux() {
                     return [4 /*yield*/, exec.exec("sudo apt install libvulkan1 vulkan-utils")];
                 case 9:
                     _d.sent();
+                    core.endGroup();
                     core.startGroup('Installing Mesa3D version latest');
                     return [4 /*yield*/, exec.exec("sudo apt install mesa-vulkan-drivers")];
                 case 10:
@@ -127,6 +131,7 @@ function installLinux() {
                     _d.sent();
                     _d.label = 12;
                 case 12:
+                    core.endGroup();
                     core.startGroup('Installing X server');
                     return [4 /*yield*/, exec.exec("sudo apt install xorg openbox xserver-xorg-video-dummy")];
                 case 13:
@@ -134,6 +139,7 @@ function installLinux() {
                     return [4 /*yield*/, exec.exec("sudo startx -config " + CONFIG_FILE)];
                 case 14:
                     _d.sent();
+                    core.endGroup();
                     return [2 /*return*/];
             }
         });
