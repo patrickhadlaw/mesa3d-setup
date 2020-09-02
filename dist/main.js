@@ -22,14 +22,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core = __importStar(require("@actions/core"));
 var install_win_1 = require("./install-win");
 var install_linux_1 = require("./install-linux");
-try {
-    if (process.platform === 'win32') {
-        install_win_1.installWin();
-    }
-    else {
-        install_linux_1.installLinux();
-    }
+if (process.platform === 'win32') {
+    install_win_1.installWin().catch(function (error) { return core.setFailed(error); });
 }
-catch (error) {
-    core.setFailed(error);
+else {
+    install_linux_1.installLinux().catch(function (error) { return core.setFailed(error); });
 }

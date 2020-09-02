@@ -82,66 +82,72 @@ function dpkgQuery(pkg) {
 }
 function installLinux() {
     return __awaiter(this, void 0, void 0, function () {
-        var vulkanVersion, mesaVersion, cacheFiles, _a, _b, _c, cacheName;
-        return __generator(this, function (_d) {
-            switch (_d.label) {
-                case 0:
-                    core.startGroup('Check cache');
-                    return [4 /*yield*/, execWithOutput('apt show libvulkan1 | grep Version | cut -d\  -f2')];
-                case 1:
-                    vulkanVersion = _d.sent();
-                    return [4 /*yield*/, execWithOutput('apt show mesa-vulkan-drivers | grep Version | cut -d\  -f2')];
-                case 2:
-                    mesaVersion = _d.sent();
-                    return [4 /*yield*/, dpkgQuery('libvulkan1')];
-                case 3:
-                    cacheFiles = _d.sent();
-                    _b = (_a = cacheFiles.push).apply;
-                    _c = [cacheFiles];
-                    return [4 /*yield*/, dpkgQuery('mesa-vulkan-drivers')];
-                case 4:
-                    _b.apply(_a, _c.concat([_d.sent()]));
-                    cacheName = process.platform + "-vulkan" + vulkanVersion + "-mesa" + mesaVersion;
-                    return [4 /*yield*/, cache.restoreCache(cacheFiles, cacheName)];
-                case 5:
-                    if (!((_d.sent()) == null)) return [3 /*break*/, 12];
-                    core.endGroup();
-                    return [4 /*yield*/, exec.exec('sudo add-apt-repository ppa:oibaf/graphics-drivers')];
-                case 6:
-                    _d.sent();
-                    return [4 /*yield*/, exec.exec('sudo apt update')];
-                case 7:
-                    _d.sent();
-                    return [4 /*yield*/, exec.exec('sudo apt upgrade')];
-                case 8:
-                    _d.sent();
-                    core.startGroup('Installing Vulkan SDK version latest');
-                    return [4 /*yield*/, exec.exec("sudo apt install libvulkan1 vulkan-utils")];
-                case 9:
-                    _d.sent();
-                    core.endGroup();
-                    core.startGroup('Installing Mesa3D version latest');
-                    return [4 /*yield*/, exec.exec("sudo apt install mesa-vulkan-drivers")];
-                case 10:
-                    _d.sent();
-                    return [4 /*yield*/, cache.saveCache(cacheFiles, cacheName).catch(function (error) {
-                            throw new Error("failed to save cache: '" + error + "'");
-                        })];
-                case 11:
-                    _d.sent();
-                    _d.label = 12;
-                case 12:
-                    core.endGroup();
-                    core.startGroup('Installing X server');
-                    return [4 /*yield*/, exec.exec("sudo apt install xorg openbox xserver-xorg-video-dummy")];
-                case 13:
-                    _d.sent();
-                    return [4 /*yield*/, exec.exec("sudo startx -config " + CONFIG_FILE)];
-                case 14:
-                    _d.sent();
-                    core.endGroup();
-                    return [2 /*return*/];
-            }
+        var _this = this;
+        return __generator(this, function (_a) {
+            return [2 /*return*/, new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
+                    var vulkanVersion, mesaVersion, cacheFiles, _a, _b, _c, cacheName;
+                    return __generator(this, function (_d) {
+                        switch (_d.label) {
+                            case 0:
+                                core.startGroup('Check cache');
+                                return [4 /*yield*/, execWithOutput('apt show libvulkan1 | grep Version | cut -d\  -f2')];
+                            case 1:
+                                vulkanVersion = _d.sent();
+                                return [4 /*yield*/, execWithOutput('apt show mesa-vulkan-drivers | grep Version | cut -d\  -f2')];
+                            case 2:
+                                mesaVersion = _d.sent();
+                                return [4 /*yield*/, dpkgQuery('libvulkan1')];
+                            case 3:
+                                cacheFiles = _d.sent();
+                                _b = (_a = cacheFiles.push).apply;
+                                _c = [cacheFiles];
+                                return [4 /*yield*/, dpkgQuery('mesa-vulkan-drivers')];
+                            case 4:
+                                _b.apply(_a, _c.concat([_d.sent()]));
+                                cacheName = process.platform + "-vulkan" + vulkanVersion + "-mesa" + mesaVersion;
+                                return [4 /*yield*/, cache.restoreCache(cacheFiles, cacheName)];
+                            case 5:
+                                if (!((_d.sent()) == null)) return [3 /*break*/, 12];
+                                core.endGroup();
+                                return [4 /*yield*/, exec.exec('sudo add-apt-repository ppa:oibaf/graphics-drivers')];
+                            case 6:
+                                _d.sent();
+                                return [4 /*yield*/, exec.exec('sudo apt update')];
+                            case 7:
+                                _d.sent();
+                                return [4 /*yield*/, exec.exec('sudo apt upgrade')];
+                            case 8:
+                                _d.sent();
+                                core.startGroup('Installing Vulkan SDK version latest');
+                                return [4 /*yield*/, exec.exec("sudo apt install libvulkan1 vulkan-utils")];
+                            case 9:
+                                _d.sent();
+                                core.endGroup();
+                                core.startGroup('Installing Mesa3D version latest');
+                                return [4 /*yield*/, exec.exec("sudo apt install mesa-vulkan-drivers")];
+                            case 10:
+                                _d.sent();
+                                return [4 /*yield*/, cache.saveCache(cacheFiles, cacheName).catch(function (error) {
+                                        throw new Error("failed to save cache: '" + error + "'");
+                                    })];
+                            case 11:
+                                _d.sent();
+                                _d.label = 12;
+                            case 12:
+                                core.endGroup();
+                                core.startGroup('Installing X server');
+                                return [4 /*yield*/, exec.exec("sudo apt install xorg openbox xserver-xorg-video-dummy")];
+                            case 13:
+                                _d.sent();
+                                return [4 /*yield*/, exec.exec("sudo startx -config " + CONFIG_FILE)];
+                            case 14:
+                                _d.sent();
+                                core.endGroup();
+                                resolve();
+                                return [2 /*return*/];
+                        }
+                    });
+                }); })];
         });
     });
 }

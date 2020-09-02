@@ -65,75 +65,80 @@ var MESA_VERSION = '20.2.0-rc3';
 // TODO: finish implementing windows installation
 function installWin() {
     return __awaiter(this, void 0, void 0, function () {
-        var githubWorkspacePath, libPath, vulkanSdkPath, vulkanRuntimePath, extracted, mesaTarPath, mesaSrcDir;
+        var _this = this;
         return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    githubWorkspacePath = process.env['GITHUB_WORKSPACE'];
-                    libPath = githubWorkspacePath + "/lib";
-                    return [4 /*yield*/, io.mkdirP(libPath)];
-                case 1:
-                    _a.sent();
-                    core.info("Installing Vulkan SDK version v" + VULKAN_VERSION);
-                    vulkanSdkPath = "C:/VulkanSDK/" + VULKAN_VERSION;
-                    return [4 /*yield*/, exec.exec("echo \"::set-env name=VULKAN_SDK::" + vulkanSdkPath + "\"")];
-                case 2:
-                    _a.sent();
-                    return [4 /*yield*/, exec.exec("echo \"::set-env name=VK_SDK_PATH::" + vulkanSdkPath + "\"")];
-                case 3:
-                    _a.sent();
-                    return [4 /*yield*/, exec.exec("choco install vulkan-sdk --version=" + VULKAN_VERSION)];
-                case 4:
-                    _a.sent();
-                    return [4 /*yield*/, tc.downloadTool("https://sdk.lunarg.com/sdk/download/" + VULKAN_VERSION + "/windows/vulkan-runtime-components.zip", './vulkan-runtime-components.zip')];
-                case 5:
-                    vulkanRuntimePath = _a.sent();
-                    return [4 /*yield*/, tc.extractZip(vulkanRuntimePath, './vulkan-runtime-components')];
-                case 6:
-                    extracted = _a.sent();
-                    return [4 /*yield*/, io.cp(extracted + "/VulkanRT-" + VULKAN_VERSION + "-Components/x64/.", libPath, { recursive: true })];
-                case 7:
-                    _a.sent();
-                    core.info("Installing Mesa3D version v" + MESA_VERSION);
-                    return [4 /*yield*/, exec.exec('choco install winflexbison pkgconfiglite').catch(function (reason) {
-                            throw new Error("failed to install dependencies: '" + reason + "'");
-                        })];
-                case 8:
-                    _a.sent();
-                    return [4 /*yield*/, exec.exec('python -m pip install scons wheel mako==0.8.0').catch(function (reason) {
-                            throw new Error("failed to install python packages: '" + reason + "'");
-                        })];
-                case 9:
-                    _a.sent();
-                    return [4 /*yield*/, tc.downloadTool("https://archive.mesa3d.org/mesa-" + MESA_VERSION + ".tar.xz", "./mesa-" + MESA_VERSION + ".tar.xz").catch(function (reason) {
-                            throw new Error("failed to download Mesa3D tarball: '" + reason + "'");
-                        })];
-                case 10:
-                    mesaTarPath = _a.sent();
-                    return [4 /*yield*/, exec.exec("7z e -txz -y -r ./mesa-" + MESA_VERSION + ".tar.xz")];
-                case 11:
-                    _a.sent();
-                    return [4 /*yield*/, exec.exec("7z x -ttar -y ./mesa-" + MESA_VERSION + ".tar")];
-                case 12:
-                    _a.sent();
-                    mesaSrcDir = "./mesa-" + MESA_VERSION + "/";
-                    process.chdir(mesaSrcDir);
-                    return [4 /*yield*/, exec.exec("scons").catch(function (reason) {
-                            throw new Error("failed to build Mesa3D: '" + reason + "'");
-                        })];
-                case 13:
-                    _a.sent();
-                    return [4 /*yield*/, exec.exec('ls -R ./build')];
-                case 14:
-                    _a.sent();
-                    return [4 /*yield*/, io.cp(mesaSrcDir + "lib64/.", libPath).catch(function (reason) {
-                            throw new Error("failed to copy Mesa3D binaries: '" + reason + "'");
-                        })];
-                case 15:
-                    _a.sent();
-                    core.addPath(libPath);
-                    throw new Error('failed to setup Mesa3D: \'Windows not supported (yet)\'');
-            }
+            return [2 /*return*/, new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
+                    var githubWorkspacePath, libPath, vulkanSdkPath, vulkanRuntimePath, extracted, mesaTarPath, mesaSrcDir;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0:
+                                githubWorkspacePath = process.env['GITHUB_WORKSPACE'];
+                                libPath = githubWorkspacePath + "/lib";
+                                return [4 /*yield*/, io.mkdirP(libPath)];
+                            case 1:
+                                _a.sent();
+                                core.info("Installing Vulkan SDK version v" + VULKAN_VERSION);
+                                vulkanSdkPath = "C:/VulkanSDK/" + VULKAN_VERSION;
+                                return [4 /*yield*/, exec.exec("echo \"::set-env name=VULKAN_SDK::" + vulkanSdkPath + "\"")];
+                            case 2:
+                                _a.sent();
+                                return [4 /*yield*/, exec.exec("echo \"::set-env name=VK_SDK_PATH::" + vulkanSdkPath + "\"")];
+                            case 3:
+                                _a.sent();
+                                return [4 /*yield*/, exec.exec("choco install vulkan-sdk --version=" + VULKAN_VERSION)];
+                            case 4:
+                                _a.sent();
+                                return [4 /*yield*/, tc.downloadTool("https://sdk.lunarg.com/sdk/download/" + VULKAN_VERSION + "/windows/vulkan-runtime-components.zip", './vulkan-runtime-components.zip')];
+                            case 5:
+                                vulkanRuntimePath = _a.sent();
+                                return [4 /*yield*/, tc.extractZip(vulkanRuntimePath, './vulkan-runtime-components')];
+                            case 6:
+                                extracted = _a.sent();
+                                return [4 /*yield*/, io.cp(extracted + "/VulkanRT-" + VULKAN_VERSION + "-Components/x64/.", libPath, { recursive: true })];
+                            case 7:
+                                _a.sent();
+                                core.info("Installing Mesa3D version v" + MESA_VERSION);
+                                return [4 /*yield*/, exec.exec('choco install winflexbison pkgconfiglite').catch(function (reason) {
+                                        throw new Error("failed to install dependencies: '" + reason + "'");
+                                    })];
+                            case 8:
+                                _a.sent();
+                                return [4 /*yield*/, exec.exec('python -m pip install scons wheel mako==0.8.0').catch(function (reason) {
+                                        throw new Error("failed to install python packages: '" + reason + "'");
+                                    })];
+                            case 9:
+                                _a.sent();
+                                return [4 /*yield*/, tc.downloadTool("https://archive.mesa3d.org/mesa-" + MESA_VERSION + ".tar.xz", "./mesa-" + MESA_VERSION + ".tar.xz").catch(function (reason) {
+                                        throw new Error("failed to download Mesa3D tarball: '" + reason + "'");
+                                    })];
+                            case 10:
+                                mesaTarPath = _a.sent();
+                                return [4 /*yield*/, exec.exec("7z e -txz -y -r ./mesa-" + MESA_VERSION + ".tar.xz")];
+                            case 11:
+                                _a.sent();
+                                return [4 /*yield*/, exec.exec("7z x -ttar -y ./mesa-" + MESA_VERSION + ".tar")];
+                            case 12:
+                                _a.sent();
+                                mesaSrcDir = "./mesa-" + MESA_VERSION + "/";
+                                process.chdir(mesaSrcDir);
+                                return [4 /*yield*/, exec.exec("scons").catch(function (reason) {
+                                        throw new Error("failed to build Mesa3D: '" + reason + "'");
+                                    })];
+                            case 13:
+                                _a.sent();
+                                return [4 /*yield*/, exec.exec('ls -R ./build')];
+                            case 14:
+                                _a.sent();
+                                return [4 /*yield*/, io.cp(mesaSrcDir + "lib64/.", libPath).catch(function (reason) {
+                                        throw new Error("failed to copy Mesa3D binaries: '" + reason + "'");
+                                    })];
+                            case 15:
+                                _a.sent();
+                                core.addPath(libPath);
+                                throw new Error('failed to setup Mesa3D: \'Windows not supported (yet)\'');
+                        }
+                    });
+                }); })];
         });
     });
 }
