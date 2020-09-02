@@ -15,10 +15,10 @@ function execWithOutput(command: string): Promise<String> {
   });
 }
 
-function dpkgQuery(pkg: string): Promise<string[]> {
+function aptQueryFiles(pkg: string): Promise<string[]> {
   return new Promise((resolve, reject) => {
     let result: string[] = [];
-    exec.exec('dpkg-query', ['-L', pkg], <exec.ExecOptions> {
+    exec.exec('apt-file', ['list', pkg], <exec.ExecOptions> {
       listeners: {
         stdout: out => result.push(out.toString())
       }
@@ -35,8 +35,9 @@ export async function installLinux(): Promise<any> {
     const mesaVersion = await execWithOutput(
       `/bin/bash -c "apt-cache show mesa-vulkan-drivers | grep Version | cut -d ' ' -f2 | head -n 1"`
     ).catch(error => reject(error));
-    let cacheFiles = await dpkgQuery('libvulkan1');
-    cacheFiles.push(...await dpkgQuery('mesa-vulkan-drivers'));
+    await exec.exec('sudo apt-file update');
+    let cacheFiles = await aptQueryFiles('libvulkan1');
+    cacheFiles.push(...await aptQueryFiles('mesa-vulkan-drivers'));
     const cacheName = `${process.platform}-vulkan${vulkanVersion}-mesa${mesaVersion}`;
     if (await cache.restoreCache(cacheFiles, cacheName) == null) {
       core.endGroup();
