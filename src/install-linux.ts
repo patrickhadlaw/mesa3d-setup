@@ -5,7 +5,7 @@ import * as io from '@actions/io';
 import * as cache from '@actions/cache';
 import { VERSION } from './version';
 
-const CONFIG_FILE = 'dummy-1920x1080.conf';
+const CONFIG_FILE = 'dummy.conf';
 
 function execWithOutput(command: string): Promise<String> {
   return new Promise((resolve, reject) => {
@@ -58,7 +58,7 @@ export async function installLinux(): Promise<any> {
     core.endGroup();
     core.startGroup('Installing X server');
     await exec.exec(`sudo apt-get install xorg openbox xserver-xorg-video-dummy`);
-    await io.cp(`${__dirname}/${CONFIG_FILE}`, '/etc/X11/xorg.conf');
+    await io.cp(`${__dirname}/../${CONFIG_FILE}`, '/etc/X11/xorg.conf');
     await exec.exec(`sudo startx`);
     core.endGroup();
     resolve();
